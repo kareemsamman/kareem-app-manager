@@ -2,37 +2,37 @@ name: Build & Release
 
 on:
   push:
-      tags:
-            - 'v*'
+    tags:
+      - 'v*'
 
-            permissions:
-              contents: write
+permissions:
+  contents: write
 
-              jobs:
-                release:
-                    runs-on: ubuntu-latest
-                        steps:
-                              - name: Checkout code
-                                      uses: actions/checkout@v4
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-                                            - name: Download plugin-update-checker
-                                                    run: |
-                                                              curl -L https://github.com/YahnisElsts/plugin-update-checker/archive/refs/heads/master.zip -o puc.zip
-                                                                        unzip puc.zip
-                                                                                  mv plugin-update-checker-master plugin-update-checker
-                                                                                            rm puc.zip
+      - name: Download plugin-update-checker
+        run: |
+          curl -L https://github.com/YahnisElsts/plugin-update-checker/archive/refs/heads/master.zip -o puc.zip
+          unzip puc.zip
+          mv plugin-update-checker-master plugin-update-checker
+          rm puc.zip
 
-                                                                                                  - name: Build plugin ZIP
-                                                                                                          run: |
-                                                                                                                    mkdir -p kareem-app-manager
-                                                                                                                              cp kareem-app-manager.php kareem-app-manager/
-                                                                                                                                        cp README.md kareem-app-manager/
-                                                                                                                                                  cp -r plugin-update-checker kareem-app-manager/
-                                                                                                                                                            if [ -f readme.txt ]; then cp readme.txt kareem-app-manager/; fi
-                                                                                                                                                                      zip -r kareem-app-manager.zip kareem-app-manager/
-                                                                                                                                                                      
-                                                                                                                                                                            - name: Create GitHub Release
-                                                                                                                                                                                    uses: softprops/action-gh-release@v2
-                                                                                                                                                                                            with:
-                                                                                                                                                                                                      files: kareem-app-manager.zip
-                                                                                                                                                                                                                generate_release_notes: true
+      - name: Build plugin ZIP
+        run: |
+          mkdir -p kareem-app-manager
+          cp kareem-app-manager.php kareem-app-manager/
+          cp README.md kareem-app-manager/
+          cp -r plugin-update-checker kareem-app-manager/
+          if [ -f readme.txt ]; then cp readme.txt kareem-app-manager/; fi
+          zip -r kareem-app-manager.zip kareem-app-manager/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: kareem-app-manager.zip
+          generate_release_notes: true
